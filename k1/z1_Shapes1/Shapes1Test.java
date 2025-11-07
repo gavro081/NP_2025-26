@@ -1,4 +1,4 @@
-package k1.Shapes1;
+package k1.z1_Shapes1;
 
 import java.io.InputStream;
 import java.io.PrintStream;

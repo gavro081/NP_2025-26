@@ -1,4 +1,4 @@
-package k1.Times;
+package k1.z7_Times;
 
 import java.io.InputStream;
 import java.io.PrintStream;

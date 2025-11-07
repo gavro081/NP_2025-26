@@ -1,4 +1,4 @@
-package k1.LogTest;
+package k1.z4_LogTest;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;

@@ -1,4 +1,4 @@
-package k1.MinMax;
+package k1.z5_MinMax;
 
 import java.util.Scanner;
 

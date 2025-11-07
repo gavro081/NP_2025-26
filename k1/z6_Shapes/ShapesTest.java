@@ -1,4 +1,4 @@
-package k1.Shapes;
+package k1.z6_Shapes;
 
 import java.util.*;
 
@@ -90,13 +90,7 @@ class Rectangle extends Shape implements Scalable, Stackable {
 
 
 class Canvas {
-    PriorityQueue<Shape> shapes = new PriorityQueue<>();
-//    {
-//        Comparator<Shape> shapeComparator = (x, y) -> Double.compare(y.weight(), x.weight());
-//        shapes = new PriorityQueue<>(
-//                shapeComparator
-//                .thenComparing(x -> x.id));
-//    }
+    TreeSet<Shape> shapes = new TreeSet<>();
 
     void add(String id, Color color, float radius){
         Circle circle = new Circle(id, color, radius);
@@ -121,14 +115,9 @@ class Canvas {
 
     @Override
     public String toString() {
-        ArrayList<Shape> sorted = new ArrayList<>();
-        while (!shapes.isEmpty()){
-            sorted.add(shapes.remove());
-        }
         StringBuilder sb = new StringBuilder();
-        for (Shape s : sorted){
+        for (Shape s : shapes){
             sb.append(s);
-            shapes.add(s);
         }
         return sb.toString();
     }
