@@ -9,6 +9,8 @@ import java.util.Comparator;
 import java.util.Map;
 import java.util.Scanner;
 
+// 2 cases off by .001 :|
+
 class AmountNotAllowedException extends Exception{
     AmountNotAllowedException(int sum){
         super("Receipt with amount " + sum + " is not allowed to be scanned");

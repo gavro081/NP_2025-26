@@ -1,4 +1,4 @@
-package k1.z2_Subtitles;
+package k1.z20_Subtitles;
 
 import java.io.InputStream;
 import java.time.LocalTime;
@@ -12,6 +12,8 @@ class Element{
     private LocalTime start;
     private LocalTime end;
     private String text;
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss,SSS");
+
 
     public Element(int seqNum, LocalTime start, LocalTime end, String text) {
         this.seqNum = seqNum;
@@ -26,12 +28,12 @@ class Element{
     }
 
     @Override
-    public String toString(){
-        return seqNum + "\n"
-                + start.toString().replaceAll("\\.", ",")
-                + " --> "
-                + end.toString().replaceAll("\\.", ",") + "\n"
-                + text;
+    public String toString() {
+        return String.format("%d%n%s --> %s%n%s%n",
+                seqNum,
+                start.format(FORMATTER),
+                end.format(FORMATTER),
+                text.trim());
     }
 }
 
@@ -44,7 +46,7 @@ class Subtitles {
     }
     public int loadSubtitles(InputStream inputStream){
         Scanner sc = new Scanner(inputStream);
-        while (true) {
+        while (sc.hasNextLine()) {
             int seqNum = Integer.parseInt(sc.nextLine());
             String[] parts = sc.nextLine().split(" --> ");
             LocalTime start = LocalTime.parse(parts[0], formatter);
@@ -52,16 +54,10 @@ class Subtitles {
             StringBuilder sb = new StringBuilder();
             while (sc.hasNextLine()){
                 String line = sc.nextLine();
-                if (line.isBlank() || line.isEmpty()) break;
-                sb.append(line);
-                if (!line.endsWith("\n")) sb.append("\n");
+                if (line.trim().isEmpty()) break;
+                sb.append(line).append("\n");
             }
             elements.add(new Element(seqNum, start, end, sb.toString()));
-            if (sc.hasNextLine())
-            {
-//                sc.nextLine();
-            }
-            else break;
         }
         return elements.size();
     }
