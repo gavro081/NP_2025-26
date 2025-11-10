@@ -27,13 +27,13 @@ class Applicant implements Comparable<Applicant>{
     }
 
     public double calculatePoints(){
-        double points = gpa * 12;
+        double points = 0;
         for (SubjectWithGrade s: subjectsWithGrade){
             if (studyProgramme.getFaculty().isSubjectAppropriate(s.getSubject())){
                 points += 2 * s.getGrade();
             } else points += 1.2 * s.getGrade();
         }
-
+        points += gpa * 12;
         return points;
     }
 
@@ -68,7 +68,6 @@ class StudyProgramme{
         this.enrolledInPrivateQuota = 0;
         faculty = f;
         applicants = new ArrayList<>();
-//        f.addStudyProgramme(this);
     }
 
     public Faculty getFaculty(){
