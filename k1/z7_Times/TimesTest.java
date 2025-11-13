@@ -1,9 +1,11 @@
 package k1.z7_Times;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 class UnsupportedFormatException extends Exception{
     UnsupportedFormatException(String message){
@@ -79,10 +81,11 @@ class TimeTable {
     ArrayList<Time> times = new ArrayList<>();
     TimeTable(){}
 
-    public void readTimes(InputStream in) throws InvalidTimeException, UnsupportedFormatException {
-        Scanner sc = new Scanner(in);
-        while (sc.hasNextLine()){
-            String line = sc.nextLine();
+    public void readTimes(InputStream in) 
+    throws InvalidTimeException, UnsupportedFormatException, IOException {
+        BufferedReader sc = new BufferedReader(new InputStreamReader(in));
+        String line;
+        while ((line = sc.readLine()) != null){
             String []parts = line.split(" ");
             for (String part : parts){
                 times.add(new Time(part));
@@ -106,7 +109,7 @@ class TimeTable {
 
 public class TimesTest {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         TimeTable timeTable = new TimeTable();
         try {
             timeTable.readTimes(System.in);

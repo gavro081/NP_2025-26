@@ -10,13 +10,20 @@ class NonExistingItemException extends Exception{
     }
 }
 
-class Archive {
-    private int id;
-    private Date dateArchived;
+enum ArchiveType {
+    LockedArchive,
+    SpecialArchive
+}
 
-    public Archive(int id) {
+class Archive {
+    private final int id;
+    private Date dateArchived;
+    private final ArchiveType archiveType;
+
+    public Archive(int id, ArchiveType archiveType) {
         this.id = id;
         dateArchived = null;
+        this.archiveType = archiveType;
     }
 
     public void setDateArchived(Date dateArchived) {
@@ -27,6 +34,10 @@ class Archive {
         return dateArchived;
     }
 
+    public ArchiveType getArchiveType(){
+        return archiveType;
+    }
+
     public int getId() {
         return id;
     }
@@ -35,7 +46,7 @@ class Archive {
 class LockedArchive extends Archive {
     private Date dateToOpen;
     LockedArchive(int id, Date dateToOpen){
-        super(id);
+        super(id, ArchiveType.LockedArchive);
         this.dateToOpen = dateToOpen;
     }
 
@@ -53,7 +64,7 @@ class SpecialArchive extends Archive {
     private int openedCount;
 
     public SpecialArchive(int id, int maxOpen) {
-        super(id);
+        super(id, ArchiveType.SpecialArchive);
         this.maxOpen = maxOpen;
         this.openedCount = 0;
     }
@@ -99,7 +110,7 @@ class ArchiveStore {
                 .filter(i -> i.getId() == id)
                 .findFirst()
                 .orElseThrow(() -> new NonExistingItemException(id));
-        if (archive instanceof LockedArchive){
+        if (archive.getArchiveType() == ArchiveType.LockedArchive){
             LockedArchive la = (LockedArchive) archive;
             if (date.before(la.getDateToOpen())){
                 logs.add(String.format(

@@ -1,17 +1,19 @@
-//package k1.z25_Discounts;
+package k1.z25_Discounts;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Scanner;
 import java.util.stream.Collectors;
 
 /**
  * Discounts
  */
 public class DiscountsTest {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException{
         Discounts discounts = new Discounts();
         int stores = discounts.readStores(System.in);
         System.out.println("Stores read: " + stores);
@@ -101,10 +103,11 @@ class Discounts {
         this.stores = new ArrayList<>();
     }
 
-    public int readStores(InputStream inputStream){
-        Scanner sc = new Scanner(inputStream);
-        while (sc.hasNextLine()){
-            stores.add(new Store(sc.nextLine()));
+    public int readStores(InputStream inputStream)throws IOException{
+        BufferedReader sc = new BufferedReader(new InputStreamReader(inputStream));
+        String line;
+        while ((line = sc.readLine()) != null){
+            stores.add(new Store(line));
         }
         return stores.size();
     }

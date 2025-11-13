@@ -1,7 +1,6 @@
 package k1.z2_Shapes2;
 
-import java.io.InputStream;
-import java.io.PrintStream;
+import java.io.*;
 import java.util.*;
 
 class InvalidCanvasException extends Exception{
@@ -10,12 +9,24 @@ class InvalidCanvasException extends Exception{
     }
 }
 
+enum ShapeType {
+    CIRCLE,
+    SQUARE
+}
+
 abstract class Shape implements Comparable<Shape>{
     double s;
-    Shape(double s){
+    ShapeType shapeType;
+    
+    Shape(double s, ShapeType shapeType){
         this.s = s;
+        this.shapeType = shapeType;
     }
     abstract double getArea();
+    
+    ShapeType getShapeType(){
+        return shapeType;
+    }
 
     @Override
     public int compareTo(Shape o) {
@@ -25,7 +36,7 @@ abstract class Shape implements Comparable<Shape>{
 
 class Square extends Shape {
     public Square(double s) {
-        super(s);
+        super(s, ShapeType.SQUARE);
     }
 
     @Override
@@ -36,7 +47,7 @@ class Square extends Shape {
 
 class Circle extends Shape {
     public Circle(double s) {
-        super(s);
+        super(s, ShapeType.CIRCLE);
     }
 
     @Override
@@ -84,13 +95,13 @@ class Canvas {
 
     public long totalCircles(){
         return shapes.stream()
-                .filter(s -> s instanceof Circle)
+                .filter(s -> s.getShapeType() == ShapeType.CIRCLE)
                 .count();
     }
 
     public long totalSquares(){
         return shapes.stream()
-                .filter(s -> s instanceof Square)
+                .filter(s -> s.getShapeType() == ShapeType.SQUARE)
                 .count();
     }
 
@@ -118,10 +129,11 @@ class ShapesApplication {
         canvases = new ArrayList<>();
     }
 
-    public void readCanvases(InputStream in) {
-        Scanner sc = new Scanner(in);
-        while (sc.hasNextLine()){
-            String []parts = sc.nextLine().split("\\s++");
+    public void readCanvases(InputStream in) throws IOException {
+        BufferedReader sc = new BufferedReader(new InputStreamReader(in));
+        String line;
+        while ((line = sc.readLine()) != null){
+            String []parts = line.split("\\s++");
             Canvas canvas = new Canvas(parts[0]);
             try{
                 for (int i = 1; i < parts.length; i+=2)
@@ -134,15 +146,17 @@ class ShapesApplication {
     }
 
     public void printCanvases(PrintStream out) {
+        PrintWriter pw = new PrintWriter(out);
         canvases.stream()
                 .sorted(Comparator.comparingDouble(Canvas::getTotalArea).reversed())
-                .forEach(out::println);
+                .forEach(pw::println);
+        pw.flush();
     }
 }
 
 public class Shapes2Test {
 
-    public static void main(String[] args) {
+    public static void main(String[] args)throws IOException {
 
         ShapesApplication shapesApplication = new ShapesApplication(10000);
 

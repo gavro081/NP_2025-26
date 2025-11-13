@@ -1,7 +1,6 @@
 package k1.z1_Shapes1;
 
-import java.io.InputStream;
-import java.io.PrintStream;
+import java.io.*;
 import java.util.*;
 
 
@@ -27,11 +26,12 @@ class ShapesApplication {
     ShapesApplication(){
         windows = new ArrayList<>();
     }
-    int readCanvases (InputStream in) {
-        Scanner sc = new Scanner(in);
+    int readCanvases (InputStream in) throws IOException{
+        BufferedReader sc = new BufferedReader(new InputStreamReader(in));
         int count = 0;
-        while (sc.hasNextLine()){
-            String []parts = sc.nextLine().split("\\s++");
+        String line;
+        while ((line = sc.readLine()) != null){
+            String []parts = line.split("\\s++");
             count += parts.length - 1;
             Window w = new Window(parts[0]);
             Arrays.stream(parts)
@@ -40,21 +40,22 @@ class ShapesApplication {
                     .forEach(w::addSquare);
             windows.add(w);
         }
-//        return windows.stream().mapToInt(Window::getSize).sum();
         return count;
     }
 
     public void printLargestCanvasTo(PrintStream out) {
+        PrintWriter pw = new PrintWriter(out);
         Window window = windows.stream().max(Comparator.comparingInt(Window::getPerimeter)).get();
-        out.println(
+        pw.println(
                 String.format("%s %s %s", window.id, window.getSize(), window.getPerimeter())
         );
+        pw.flush();
     }
 }
 
 public class Shapes1Test {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException{
         ShapesApplication shapesApplication = new ShapesApplication();
 
         System.out.println("===READING SQUARES FROM INPUT STREAM===");

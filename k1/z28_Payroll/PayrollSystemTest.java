@@ -1,6 +1,9 @@
 package k1.z28_Payroll;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.*;
 
@@ -98,10 +101,11 @@ class PayrollSystem{
         this.ticketRateByLevel = ticketRateByLevel;
         this.employees = new ArrayList<>();
     }
-    void readEmployees (InputStream is){
-        Scanner sc = new Scanner(is);
-        while (sc.hasNextLine()){
-            String []parts = sc.nextLine().split(";");
+    void readEmployees (InputStream is) throws IOException{
+        BufferedReader sc = new BufferedReader(new InputStreamReader(is));
+        String line;
+        while ((line = sc.readLine()) != null){
+            String []parts = line.split(";");
             if (parts[0].equals("H")){
                 employees.add(new HourlyEmployee(parts[1], parts[2], hourlyRateByLevel.get(parts[2]), Double.parseDouble(parts[3])));
             } else if (parts[0].equals("F")) {
@@ -128,7 +132,7 @@ class PayrollSystem{
 
 public class PayrollSystemTest {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException{
 
         Map<String, Double> hourlyRateByLevel = new LinkedHashMap<>();
         Map<String, Double> ticketRateByLevel = new LinkedHashMap<>();

@@ -1,11 +1,13 @@
 package k1.z20_Subtitles;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 class Element{
     private int seqNum;
@@ -44,16 +46,16 @@ class Subtitles {
     Subtitles(){
         elements = new ArrayList<>();
     }
-    public int loadSubtitles(InputStream inputStream){
-        Scanner sc = new Scanner(inputStream);
-        while (sc.hasNextLine()) {
-            int seqNum = Integer.parseInt(sc.nextLine());
-            String[] parts = sc.nextLine().split(" --> ");
+    public int loadSubtitles(InputStream inputStream) throws IOException{
+        BufferedReader sc = new BufferedReader(new InputStreamReader(inputStream));
+        String line;
+        while ((line = sc.readLine()) != null){
+            int seqNum = Integer.parseInt(line);
+            String[] parts = sc.readLine().split(" --> ");
             LocalTime start = LocalTime.parse(parts[0], formatter);
             LocalTime end = LocalTime.parse(parts[1], formatter);
             StringBuilder sb = new StringBuilder();
-            while (sc.hasNextLine()){
-                String line = sc.nextLine();
+            while ((line = sc.readLine()) != null){
                 if (line.trim().isEmpty()) break;
                 sb.append(line).append("\n");
             }
@@ -73,7 +75,7 @@ class Subtitles {
 }
 
 public class SubtitlesTest {
-    public static void main(String[] args) {
+    public static void main(String[] args)throws IOException {
         Subtitles subtitles = new Subtitles();
         int n = subtitles.loadSubtitles(System.in);
         System.out.println("+++++ ORIGINIAL SUBTITLES +++++");

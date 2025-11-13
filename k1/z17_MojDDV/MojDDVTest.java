@@ -1,13 +1,15 @@
 package k1.z17_MojDDV;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Map;
-import java.util.Scanner;
 
 // 2 cases off by .001 :|
 
@@ -55,10 +57,11 @@ class MojDDV{
         this.receipts = new ArrayList<>();
     }
 
-    public void readRecords (InputStream inputStream){
-        Scanner sc = new Scanner(inputStream);
-        while (sc.hasNextLine()){
-            String []parts = sc.nextLine().split("\\s++");
+    public void readRecords (InputStream inputStream) throws IOException{
+        BufferedReader sc = new BufferedReader(new InputStreamReader(inputStream));
+        String line;
+        while ((line = sc.readLine()) != null){
+            String []parts = line.split("\\s++");
             String id = parts[0];
             int totalSum = 0;
             double totalTax = 0;
@@ -77,14 +80,12 @@ class MojDDV{
 
     }
     public void printTaxReturns(OutputStream outputStream){
+        PrintWriter pw = new PrintWriter(outputStream);
         receipts.forEach(r -> {
-            try {
-                String outputString = r.toString() + "\n";
-                outputStream.write(outputString.getBytes());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            String outputString = r.toString();
+            pw.println(outputString);
         });
+        pw.flush();
     }
 
     double min(){
@@ -129,7 +130,7 @@ class MojDDV{
 
 public class MojDDVTest {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException{
 
         MojDDV mojDDV = new MojDDV();
 

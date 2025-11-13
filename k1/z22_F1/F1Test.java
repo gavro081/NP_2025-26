@@ -1,19 +1,22 @@
 package k1.z22_F1;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class F1Test {
 
-    public static void main(String[] args) {
+    public static void main(String[] args)throws IOException {
         F1Race f1Race = new F1Race();
         f1Race.readResults(System.in);
         f1Race.printSorted(System.out);
@@ -67,10 +70,11 @@ class F1Race {
         this.infos = new ArrayList<>();
     }
 
-    public void readResults(InputStream in) {
-        Scanner sc = new Scanner(in);
-        while (sc.hasNextLine()){
-            String []parts = sc.nextLine().split("\\s++");
+    public void readResults(InputStream in)throws IOException {
+        BufferedReader sc = new BufferedReader(new InputStreamReader(in));
+        String line;
+        while ((line = sc.readLine()) != null){
+            String []parts = line.split("\\s++");
             String name = parts[0];
             LocalTime lap1 = LocalTime.parse(parts[1], formatter);
             LocalTime lap2 = LocalTime.parse(parts[2], formatter);
@@ -80,12 +84,14 @@ class F1Race {
     }
 
     public void printSorted(PrintStream out) {
+        PrintWriter pw = new PrintWriter(out);
         AtomicInteger i = new AtomicInteger(1);
         infos.stream()
                 .sorted()
                 .map(info -> String.format("%s. %-10s%10s",
                         i.getAndIncrement(), info.name, info.getMin().format(outputFormatter)))
-                .forEach(out::println);
+                .forEach(pw::println);
+        pw.flush();
     }
 
 
