@@ -1,0 +1,101 @@
+package k1.z46_movies;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+class Movie {
+    String title;
+    List<Integer> ratings;
+
+    public Movie(String title, int[] ratings) {
+        this.title = title;
+        this.ratings = Arrays.stream(ratings).boxed().collect(Collectors.toList());
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public double getAverage(){
+        return ratings.stream()
+                .mapToDouble(Integer::doubleValue)
+                .average()
+                .getAsDouble();
+    }
+
+    public double getRatingCoef(int max){
+        return getAverage() * ratings.size() / max;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s (%.2f) of %d ratings"
+        ,title, getAverage(), ratings.size());
+    }
+}
+
+class MoviesList {
+    List<Movie> movies;
+    int maxRatings;
+
+    MoviesList(){
+        this.movies = new ArrayList<>();
+        maxRatings = 0;
+    }
+
+    public void addMovie(String title, int[] ratings){
+        movies.add(new Movie(title, ratings));
+        maxRatings = Math.max(ratings.length, maxRatings);
+    }
+
+    public List<Movie> top10ByAvgRating(){
+       return movies.stream()
+                .sorted(Comparator
+                        .comparing(Movie::getAverage)
+                        .reversed()
+                        .thenComparing(Movie::getTitle))
+                .limit(10)
+                .collect(Collectors.toList());
+    }
+    public List<Movie> top10ByRatingCoef(){
+       return movies.stream()
+                .sorted(Comparator
+                        .comparing((Movie m) -> m.getRatingCoef(maxRatings))
+                        .reversed()
+                        .thenComparing(Movie::getTitle))
+                .limit(10)
+                .collect(Collectors.toList());
+    }
+}
+
+public class MoviesTest {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        MoviesList moviesList = new MoviesList();
+        int n = scanner.nextInt();
+        scanner.nextLine();
+        for (int i = 0; i < n; ++i) {
+            String title = scanner.nextLine();
+            int x = scanner.nextInt();
+            int[] ratings = new int[x];
+            for (int j = 0; j < x; ++j) {
+                ratings[j] = scanner.nextInt();
+            }
+            scanner.nextLine();
+            moviesList.addMovie(title, ratings);
+        }
+        scanner.close();
+        List<Movie> movies = moviesList.top10ByAvgRating();
+        System.out.println("=== TOP 10 BY AVERAGE RATING ===");
+        for (Movie movie : movies) {
+            System.out.println(movie);
+        }
+        movies = moviesList.top10ByRatingCoef();
+        System.out.println("=== TOP 10 BY RATING COEFFICIENT ===");
+        for (Movie movie : movies) {
+            System.out.println(movie);
+        }
+    }
+}
+
+// vashiot kod ovde
